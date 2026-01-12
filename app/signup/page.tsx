@@ -6,7 +6,6 @@ import { Input } from "@/components/ui/input";
 import { signup } from "@/lib/auth/actions";
 import { Eye, EyeClosed, LucidePersonStanding } from "lucide-react";
 import Link from "next/link";
-import { redirect } from "next/navigation";
 import { useRouter } from "next/navigation";
 import { FormEvent, useEffect, useState } from "react";
 import { toast } from "sonner";
@@ -19,6 +18,7 @@ export default function Signup(){
     const [password, setPassword] = useState("")
     const router = useRouter()
     const [isShowPassword, setShowPassword] = useState(false)
+    const [isLoading, setLoading] = useState(false)
 
     const handleSignUp = (e: FormEvent) => {
         e.preventDefault()  
@@ -31,6 +31,8 @@ export default function Signup(){
             return
         }
         
+        setLoading(true)
+
         signup(email, password)
             .then(()=> {
                 toast.success("Account created successfully", {
@@ -42,46 +44,55 @@ export default function Signup(){
             })
             .catch(error=> {
                 toast.error(error.message, {
-                style: {
-                    color: "red"
-                }
+                    style: {
+                        color: "red"
+                    }
+                })
             })
+            .finally(()=> {
+                setLoading(false)
             })
     }
 
     return (
         <div className="h-screen grid place-items-center px-4">
-            <Card className="w-full max-w-[500px] m-auto">
-                <CardHeader className="text-center space-y-4">
+            <Card className="w-full max-w-[500px] m-auto border-none shadow-none">
+                <CardHeader className="text-center space-y- ">
 
-                    <div className="flex w-full  justify-center">
-                        <LucidePersonStanding/>
-                        <h1 className="font-bold text-xl">Auth Studio</h1>
-                    </div>
-
-                    <div>
-                        <p>Please enter your details to sign in</p>
+                    <div className="text-center">
+                        <h1 className="font-bold text-xl">Create an account</h1>
+                        <p className="text-black/60 text-sm">Enter your email below to create your account</p>
                     </div>
                 </CardHeader>
                 
                 <CardContent>
                     <form className="space-y-4" onSubmit={handleSignUp}>
-                        <div>
-                            <label className="text-sm" htmlFor="email">Email address*</label>
+                        <div className="flex flex-col gap-2">
+                            <label
+                                className="text-sm font-medium"
+                                htmlFor="email">
+                                    Email
+                            </label>
+                            
                             <Input
                                 id="email"
-                                placeholder="Enter an email address"
+                                placeholder="Enter your email address"
                                 value={email}
                                 onChange={e=> setEmail(e.target.value)}
                             />
                         </div>
 
-                        <div>
-                            <label className="text-sm" htmlFor="password">Password*</label>
+                        <div className="flex flex-col gap-2">
+                            <label
+                                className="text-sm font-medium"
+                                htmlFor="password">
+                                    Password
+                            </label>
+                            
                             <Input
                                 id="password"
                                 type={isShowPassword ? "text" : "password"}
-                                placeholder="Enter a password"
+                                placeholder="Enter your password"
                                 value={password}
                                 icon={isShowPassword ? EyeClosed : Eye}
                                 iconPosition={"right"}
@@ -91,12 +102,14 @@ export default function Signup(){
                         </div>
 
                         <Button
-                            className="w-full"
+                            className="w-full cursor-pointer"
                             type="submit"
+                            isLoading={isLoading}
+                            loadingText="Signing"
                         >Sign up</Button>
 
                         <div>
-                            <span className="text-sm">Already a member ? <Link href="/login" className="hover:underline cursor-pointer">Sign in</Link></span>
+                            <span className="text-sm text-black/60">Already a member ? <Link href="/login" className="underline hover:text-black">Sign in</Link></span>
                         </div>
                     </form>
                 </CardContent>

@@ -54,6 +54,8 @@ When logged in as an admin, an additional **Admin** item appears in the sidebar.
 ## 🚀 Getting Started
 
 1. Clone the repository
-   ```bash
-   git clone https://github.com/your-username/your-repo-name.git
-   cd your-repo-name
+
+```sh
+   git clone https://github.com/codingwithasim/nextjs-supabase-role-based-auth.git
+   cd nextjs-supabase-role-based-auth
+```

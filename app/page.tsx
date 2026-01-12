@@ -13,8 +13,9 @@ import { useRouter } from "next/navigation"
 import { useEffect, useState } from "react"
 import { toast } from "sonner"
 import { supabase } from "@/lib/supabase/client"
-import { Info } from "lucide-react"
+import { ArrowUpRightIcon, FolderArchive, Info } from "lucide-react"
 import { signout } from "@/lib/auth/actions"
+import { Empty, EmptyContent, EmptyDescription, EmptyHeader, EmptyMedia, EmptyTitle } from "@/components/ui/empty"
 
 export default function Home() {
 
@@ -107,6 +108,45 @@ export default function Home() {
             }
         </div>
         }
+
+        <Empty>
+          <EmptyHeader>
+            <EmptyMedia variant={"icon"}>
+              <FolderArchive/>
+            </EmptyMedia>
+
+            <EmptyTitle>
+              No Projects yet
+            </EmptyTitle>
+            <EmptyDescription>
+              You haven&apos;t created any projects yet. Get started by creating
+              your first project.
+            </EmptyDescription>
+          </EmptyHeader>
+
+          <EmptyContent>
+            <div className="flex gap-2">
+              <Button>Create Project</Button>
+              <Button variant="outline">Import Project</Button>
+            </div>
+          </EmptyContent>
+
+          <Button
+            variant="link"
+            
+            className="text-muted-foreground"
+            size="sm"
+          >
+            <a href="#" className="flex items-center gap-2">
+              Learn More <ArrowUpRightIcon />
+            </a>
+          </Button>
+
+        </Empty>
+
+        
+
+        
         
       </div>
     </SidebarProvider>

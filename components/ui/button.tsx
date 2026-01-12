@@ -3,6 +3,7 @@ import { Slot } from "@radix-ui/react-slot"
 import { cva, type VariantProps } from "class-variance-authority"
 
 import { cn } from "@/lib/utils"
+import { Loader } from "lucide-react"
 
 const buttonVariants = cva(
   "inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md text-sm font-medium transition-all disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg:not([class*='size-'])]:size-4 shrink-0 [&_svg]:shrink-0 outline-none focus-visible:border-ring focus-visible:ring-ring/50 focus-visible:ring-[3px] aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive",
@@ -36,27 +37,58 @@ const buttonVariants = cva(
   }
 )
 
-function Button({
-  className,
-  variant = "default",
-  size = "default",
-  asChild = false,
-  ...props
-}: React.ComponentProps<"button"> &
+type IconType = React.ComponentType<React.SVGProps<SVGSVGElement>>
+
+type ButtonProps = React.ComponentProps<"button"> &
   VariantProps<typeof buttonVariants> & {
     asChild?: boolean
-  }) {
+    isLoading?: boolean
+    loadingText?: React.ReactNode
+    icon?: IconType
+    iconPosition?: "left" | "right"
+  }
+
+const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(function Button(
+  {
+    className,
+    variant,
+    size,
+    isLoading = false,
+    loadingText,
+    asChild = false,
+    children,
+    icon: Icon,
+    iconPosition = "left",
+    type,
+    disabled,
+    ...props
+  },
+  ref
+) {
   const Comp = asChild ? Slot : "button"
+  const isDisabled = Boolean(disabled || isLoading)
+  const showLoader = isLoading
+  const content = showLoader && loadingText ? loadingText : children
 
   return (
     <Comp
+      ref={ref}
       data-slot="button"
-      data-variant={variant}
-      data-size={size}
+      data-loading={showLoader ? "true" : undefined}
       className={cn(buttonVariants({ variant, size, className }))}
+      {...(Comp === "button" ? { type: type ?? "button" } : {})}
+      aria-busy={showLoader ? true : undefined}
+      aria-disabled={isDisabled ? true : undefined}
+      disabled={isDisabled}
       {...props}
-    />
+    >
+      {iconPosition === "right" && content}
+      {showLoader ? <Loader className="animate-spin" /> : Icon ? <Icon /> : null}
+      {iconPosition === "left" && content}
+    </Comp>
   )
-}
+})
+
+Button.displayName = "Button"
 
 export { Button, buttonVariants }

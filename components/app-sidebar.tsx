@@ -47,7 +47,7 @@ const items = [
 
 export function AppSidebar({isAdmin = false}: {isAdmin?: boolean}) {
   return (
-    <Sidebar>
+    <Sidebar variant="floating" collapsible="icon">
       <SidebarContent>
         <SidebarGroup>
           <SidebarGroupLabel>Application</SidebarGroupLabel>
@@ -57,7 +57,7 @@ export function AppSidebar({isAdmin = false}: {isAdmin?: boolean}) {
                 <SidebarMenuItem key={item.title}>
                   <SidebarMenuButton asChild>
                     <a href={item.url} className="">
-                      <item.icon />
+                      <item.icon/>
                       <span>{item.title}</span>
 
                       {

@@ -17,6 +17,7 @@ export default function Login(){
     const [password, setPassword] = useState("")
     const router = useRouter()
     const [isShowPassword, setShowPassword] = useState(false)
+    const [isLoading, setLoading] = useState(false)
 
     const handleLogin = (e: FormEvent) => {
         e.preventDefault()  
@@ -28,6 +29,9 @@ export default function Login(){
             })
             return
         }
+
+        setLoading(true)
+
         login(email, password)
             .then(()=> {
                 toast.success("Signed in successfully", {
@@ -38,34 +42,38 @@ export default function Login(){
                 router.push("/")
             })
             .catch(error=> {
+                console.log(error);
+                
                 toast.error(error.message, {
-                style: {
-                    color: "red"
-                }
+                    style: {
+                        color: "red"
+                    }
+                })
             })
+            .finally(()=> {
+                setLoading(false)
             })
     }
 
 
     return (
         <div className="h-screen grid place-items-center px-4">
-            <Card className="w-full max-w-[500px] m-auto">
-                <CardHeader className="text-center space-y-4">
+            <Card className="w-full max-w-[500px] m-auto border-none shadow-none">
+                <CardHeader className="text-center">
 
-                    <div className="flex w-full  justify-center">
-                        <LucidePersonStanding/>
-                        <h1 className="font-bold text-xl">Auth Studio</h1>
-                    </div>
+                    <h1 className="font-bold text-xl">Login to your account</h1>
+                    <p className="text-black/60 text-sm">Enter your email below to login to your account</p>
 
-                    <div>
-                        <p>Please enter your details to sign in</p>
-                    </div>
                 </CardHeader>
                 
                 <CardContent>
                     <form className="space-y-4" onSubmit={handleLogin}>
-                        <div>
-                            <label className="text-sm" htmlFor="email">Email address*</label>
+                        
+                        <div className="flex flex-col gap-2">
+                            <label
+                                htmlFor="email"
+                                className="text-sm font-medium">Email</label>
+
                             <Input
                                 id="email"
                                 placeholder="Enter your email address"
@@ -73,8 +81,11 @@ export default function Login(){
                                 onChange={e=> setEmail(e.target.value)} />
                         </div>
 
-                        <div>
-                            <label className="text-sm" htmlFor="password">Password*</label>
+                        <div className="flex flex-col gap-2">
+                            <label
+                                htmlFor="password"
+                                className="text-sm font-medium">Password</label>
+
                             <Input
                                 id="password"
                                 type={isShowPassword ? "text" : "password"}
@@ -86,10 +97,14 @@ export default function Login(){
                                 onChange={e=> setPassword(e.target.value)}/>
                         </div>
 
-                        <Button className="w-full">Sign in</Button>
+                        <Button 
+                            className="w-full cursor-pointer" 
+                            isLoading={isLoading}
+                            type="submit"
+                            loadingText="Signing">Sign in</Button>
 
                         <div>
-                            <span className="text-sm">New on our platform ? <Link className="hover:underline" href="/signup">Create Account</Link></span>
+                            <span className="text-sm text-black/60">Don't have an account ? <Link className="underline hover:text-black" href="/signup">Create Account</Link></span>
                         </div>
                     </form>
                 </CardContent>
